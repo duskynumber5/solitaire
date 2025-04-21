@@ -44,7 +44,10 @@ function GrabberClass:grab(card)
 
     self.heldObject.state = CARD_STATE.GRABBED
     
-    self.heldObject.start = self.heldObject.startPos
+    self.heldObject.start = Vector(
+        self.heldObject.position.x,
+        self.heldObject.position.y
+    )
 end
 
 function GrabberClass:release()
@@ -74,6 +77,7 @@ function GrabberClass:release()
         -- if position is not taken, it is valid
         if validPos[self.heldObject.position] == false then
             isValidReleasePosition = true
+            validPos[self.heldObject.position] = true
         end
     end
 
@@ -83,6 +87,11 @@ function GrabberClass:release()
     end
     
     self.heldObject.state = 0 -- it's no longer grabbed
+
+    self.heldObject.position = Vector(
+    self.heldObject.start.x,
+    self.heldObject.start.y
+    )
     
     self.heldObject = nil
     self.grabPos = nil

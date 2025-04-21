@@ -8,7 +8,7 @@ CARD_STATE = {
     GRABBED = 2,
 }
 
-function CardClass:new(xPos, yPos, faceUp)
+function CardClass:new(xPos, yPos, faceUp, counter)
     local card = {}
     local metadata = {__index = CardClass}
     setmetatable(card, metadata)
@@ -17,7 +17,7 @@ function CardClass:new(xPos, yPos, faceUp)
     card.size = Vector(70, 90)
 
     card.faceUp = faceUp
-    card.startPos = Vector(xPos, yPos)
+    card.counter = counter
 
     table.insert(validPos, card.position)
     validPos[card.position] = true
@@ -43,10 +43,12 @@ function CardClass:draw()
     love.graphics.setColor(1, 1, 1 ,1)
     --love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y, 6 ,6)
 
-    if self.faceUp == 1 then
-        love.graphics.draw(cards[5], self.position.x, self.position.y, 0, 1.5, 1.5)
-    else 
+    if self.faceUp == 0 then
         love.graphics.draw(cardBack, self.position.x, self.position.y, 0, 1.5, 1.5)
+    end
+
+    if self.faceUp == 1 then
+        love.graphics.draw(cards[self.counter], self.position.x, self.position.y, 0, 1.5, 1.5)
     end
 
     love.graphics.print(tostring(self.state), self.position.x + 20, self.position.y - 20)
@@ -69,9 +71,24 @@ end
 
 -- simple array shuffle :) https://gist.github.com/Uradamus/10323382 
 function shuffle()
-    for i = #possibleCards, 2, -1 do
+    for i = #cards, 2, -1 do
         local random = math.random(i)
-        possibleCards[i], possibleCards[random] = possibleCards[random], possibleCards[i]
+        cards[i], cards[random] = cards[random], cards[i]
     end
-    return possibleCards
+    return cards
+end
+
+stackTraverse = 1
+stackX = 540
+stackY = 50
+function CardClass:draw3()
+    if stackTraverse <= #cardStack then
+        for i = 1, 3 do
+            table.insert(cardTable, CardClass:new(stackX, stackY, 1, cardStack[stackTraverse]))
+            stackX = stackX + (100)
+            counter = counter + 1
+            stackTraverse = stackTraverse + 1
+        end
+    end
+    stackX = 540
 end

@@ -9,6 +9,7 @@ require "grabber"
 function love.load()
     love.window.setMode(960, 640)
     love.graphics.setBackgroundColor(0, 0.7, 0.2, 1)
+    math.randomseed(os.time())
 
     cards = {}
 
@@ -25,6 +26,7 @@ function love.load()
 
     grabber = GrabberClass:new()
     cardTable = {}
+    cardStack = {}
 
     validPos = {}
 
@@ -32,13 +34,16 @@ function love.load()
     x = 740
     y = 250
     faceUp = 0
+    counter = 1
+    shuffle(cards)
     for i = 7, 1, -1 do
             for j = i, 1, -1 do
                 if j == 1 then
                     faceUp = 1
                 end
-                table.insert(cardTable, CardClass:new(x, y, faceUp))
+                table.insert(cardTable, CardClass:new(x, y, faceUp, counter))
                 y = y + (30) -- print next row of cards
+                counter = counter + 1
             end
         faceUp = 0
         y = 250 -- reset to stack y
@@ -46,7 +51,11 @@ function love.load()
     end
 
     --draw
-    table.insert(cardTable, CardClass:new(840, 50))
+    table.insert(cardTable, CardClass:new(840, 50, 0, "stackCard"))
+    counter = counter + 1
+    for i = counter, #cards, 1 do
+        table.insert(cardStack, i)
+    end
 
     --suit stacks
     love.graphics.rectangle("fill", 100, 100, x, y)
@@ -62,6 +71,11 @@ function love.update()
         card:update() 
         if card.state == CARD_STATE.MOUSE_OVER and love.mouse.isDown(1) and grabber.heldObject == nil and card.faceUp == 1 then
             grabber:grab(card)
+        end
+        if card.tag == "stackCard" and card.state == CARD_STATE.MOUSE_OVER then
+            if love.mouse.isDown(1) then
+                cardStack:draw3()
+            end
         end
     end
 end

@@ -51,7 +51,8 @@ function love.load()
     end
 
     --draw
-    table.insert(cardTable, CardClass:new(840, 50, 0, 0, "drawCard"))
+    table.insert(cardTable, CardClass:new(840, 50, 0, counter, "stackCard"))
+    counter = counter + 1
     for i = counter, #cards do
         table.insert(cardStack, i)
     end
@@ -71,7 +72,7 @@ function love.update()
         if card.state == CARD_STATE.MOUSE_OVER and love.mouse.isDown(1) and grabber.heldObject == nil and card.faceUp == 1 then
             grabber:grab(card)
         end
-        if card.tag == "drawCard" and card.state == CARD_STATE.MOUSE_OVER then
+        if card.tag == "stackCard" and card.state == CARD_STATE.MOUSE_OVER then
             if love.mouse.isDown(1) then
                 card:draw3()
             end

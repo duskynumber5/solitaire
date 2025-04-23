@@ -17,8 +17,6 @@ function GrabberClass:new()
     -- NEW: we'll want to keep track of the object (ie. card) we're holding
     grabber.heldObject = nil
 
-    grabber.stackCard = nil
-
     return grabber
 end
 
@@ -50,17 +48,10 @@ function GrabberClass:grab(card)
         self.heldObject.position.x,
         self.heldObject.position.y
     )
-
-    for i, c in ipairs(cardTable) do
-        if c == card then
-            table.remove(cardTable, i)
-            table.insert(cardTable, card)
-            break
-        end
-    end
 end
 
 function GrabberClass:release()
+    print("RELEASE - ")
 
         -- NEW: some more logic stubs here
     if self.heldObject == nil then -- we have nothing to release
@@ -84,28 +75,25 @@ function GrabberClass:release()
         end
 
         -- if position is not taken, it is valid
-        if validPos[self.heldObject.position] == false  and heldObject.stack then
+        if validPos[self.heldObject.position] == false then
             isValidReleasePosition = true
             validPos[self.heldObject.position] = true
         end
     end
 
-    if self.stackCard then
-        isValidReleasePosition = true
-        table.insert(validPos, self.heldObject.posiiton)
-        validPos[self.heldObject.position] = true
-    end
-
---[[]]
     --if not isValidReleasePosition then
     if isValidReleasePosition == false then
         self.heldObject.position = self.heldObject.start
     end
-
-
+    
     self.heldObject.state = 0 -- it's no longer grabbed
-    self.stackCard = nil
+
+    self.heldObject.position = Vector(
+    self.heldObject.start.x,
+    self.heldObject.start.y
+    )
     
     self.heldObject = nil
     self.grabPos = nil
+
 end

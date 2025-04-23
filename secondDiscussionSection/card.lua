@@ -22,7 +22,6 @@ function CardClass:new(xPos, yPos, faceUp, counter)
     table.insert(validPos, card.position)
     validPos[card.position] = true
 
-
     return card
 end
 
@@ -68,14 +67,6 @@ function CardClass:checkForMouseOver()
         mousePos.y < self.position.y + self.size.y
 
     self.state = isMouseOver and CARD_STATE.MOUSE_OVER or CARD_STATE.IDLE
-
-    if self.state == CARD_STATE.MOUSE_OVER then
-        if grabber.heldObject then
-            grabber.stackCard = self
-            grabber.heldObject.position.x = self.position.x
-            grabber.heldObject.position.y = self.position.y + 30
-        end
-    end
 end
 
 -- simple array shuffle :) https://gist.github.com/Uradamus/10323382 

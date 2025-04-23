@@ -1,13 +1,10 @@
 
-main isnt doing that much work, however it still houses some key functions to the overall game which may be too much.
+A list of the programming patterns used, with a brief description of how you used them and why.
 
-the different parts of code are rather encapsulated, but main is still handling parts of overarching functions like grabbing.
-
-somewhat easy to follow, the back and forth between files can lead to some confusion but the functions seem easy to follow. 
-
-I think I just need to go through and tweak different things to see how things change and to better understand the processes. 
-
-the current patterns are state patterns and object patterns, but factory and command patterns could be emplimented in order to
-    help with the progressing card logic and even the current as well as the undo behaviors or replay for the game. 
+A postmortem on what you did well and what you would do differently if you were to do this project over again (maybe some programming patterns that might have been a better fit?).
 
 
+Sprites: https://opengameart.org/content/playing-cards-pack
+I didn’t make any of the assets in this project.
+
+I used the base solitare code we got from lecture as a base and built my code up from it!

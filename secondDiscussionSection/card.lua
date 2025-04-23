@@ -67,6 +67,8 @@ function CardClass:checkForMouseOver()
         mousePos.y < self.position.y + self.size.y
 
     self.state = isMouseOver and CARD_STATE.MOUSE_OVER or CARD_STATE.IDLE
+
+    
 end
 
 -- simple array shuffle :) https://gist.github.com/Uradamus/10323382 

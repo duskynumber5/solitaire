@@ -71,29 +71,11 @@ function GrabberClass:release()
     -- return the heldObject to the grabPosition
     local isValidReleasePosition = nil
 
-    -- if posiiton not valid
-    if not validPos[self.heldObject.position] then
-        isValidReleasePosition = false
-    end
-
-    -- if position is valid
-    if validPos[self.heldObject.position] then
-        -- if position is taken, its not valid
-        if validPos[self.heldObject.position] == true then
-            isValidReleasePosition = false
-        end
-
-        -- if position is not taken, it is valid
-        if validPos[self.heldObject.position] == false  and heldObject.stack then
-            isValidReleasePosition = true
-            validPos[self.heldObject.position] = true
-        end
-    end
-
     if self.stackCard then
         isValidReleasePosition = true
-        table.insert(validPos, self.heldObject.posiiton)
-        validPos[self.heldObject.position] = true
+        self.stackCard.grabbable = false
+    else 
+        isValidReleasePosition = false
     end
 
 --[[]]
@@ -102,8 +84,8 @@ function GrabberClass:release()
         self.heldObject.position = self.heldObject.start
     end
 
-
     self.heldObject.state = 0 -- it's no longer grabbed
+
     self.stackCard = nil
     
     self.heldObject = nil

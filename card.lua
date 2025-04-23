@@ -17,17 +17,14 @@ function CardClass:new(xPos, yPos, faceUp, counter)
     card.size = Vector(70, 90)
 
     card.faceUp = faceUp
+    card.grabbable = true
     card.counter = counter
-
-    table.insert(validPos, card.position)
-    validPos[card.position] = true
-
 
     return card
 end
 
 function CardClass:update()
-
+    
 end
 
 function CardClass:draw()
@@ -70,10 +67,12 @@ function CardClass:checkForMouseOver()
     self.state = isMouseOver and CARD_STATE.MOUSE_OVER or CARD_STATE.IDLE
 
     if self.state == CARD_STATE.MOUSE_OVER then
-        if grabber.heldObject then
+        if grabber.heldObject and self.faceUp == 1 then
             grabber.stackCard = self
             grabber.heldObject.position.x = self.position.x
             grabber.heldObject.position.y = self.position.y + 30
+
+
         end
     end
 end
@@ -87,16 +86,21 @@ function shuffle()
     return cards
 end
 
-stackX = 540
-stackY = 50
+
 function CardClass:draw3()
+    local stackX = 740
+    local stackY = 50
     if stackTraverse <= #cardStack then
         for i = 1, 3, 1 do
-            table.insert(cardTable, CardClass:new(stackX, stackY, 1, cardStack[stackTraverse]))
-            stackX = stackX + (100)
+            table.insert(extraCards, CardClass:new(stackX, stackY, 1, cardStack[stackTraverse]))
+            stackX = stackX - (100)
             counter = counter + 1
             stackTraverse = stackTraverse + 1
+            if i < 3 then
+                self.grabbable = false
+            end
         end
     end
     stackX = 540
+    return true
 end

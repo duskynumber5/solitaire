@@ -28,6 +28,8 @@ function love.load()
     cardTable = {}
     cardStack = {}
 
+    extraCards = {}
+
     validPos = {}
 
     -- stacks
@@ -56,19 +58,18 @@ function love.load()
         table.insert(cardStack, i)
     end
 
-    --suit stacks
-    love.graphics.rectangle("fill", 100, 100, x, y)
-
 end
 
 function love.update()
     grabber:update()
 
+    grabber.stackCard = nil
+
     checkForMouseMoving()
 
     for _, card in ipairs(cardTable) do
         card:update() 
-        if card.state == CARD_STATE.MOUSE_OVER and love.mouse.isDown(1) and grabber.heldObject == nil and card.faceUp == 1 then
+        if card.state == CARD_STATE.MOUSE_OVER and love.mouse.isDown(1) and grabber.heldObject == nil and card.faceUp == 1 and card.grabbable == true then
             grabber:grab(card)
         end
         if card.tag == "drawCard" and card.state == CARD_STATE.MOUSE_OVER then
@@ -80,6 +81,25 @@ function love.update()
 end
 
 function love.draw()
+    -- 7 stack placements
+    x = 740
+    y = 250
+    for i = 7, 1, -1 do
+        love.graphics.rectangle("line", x + 14, y, cards[3]:getWidth() + 5, cards[3]:getHeight() + 32, 6 ,6)
+        x = x - (100 + i) -- print cards from right to left
+    end
+
+    -- suit stacks
+    x = 50
+    for i = 4, 1, -1 do
+        love.graphics.rectangle("line", x, 50, cards[3]:getWidth() + 5, cards[3]:getHeight() + 32, 6, 6)
+        x = x + (100)
+    end
+
+    for _, card in ipairs(extraCards) do
+        card:draw() 
+    end
+
     for _, card in ipairs(cardTable) do
         card:draw()  -- card.draw(card)
     end

@@ -71,8 +71,6 @@ function CardClass:checkForMouseOver()
             grabber.stackCard = self
             grabber.heldObject.position.x = self.position.x
             grabber.heldObject.position.y = self.position.y + 30
-
-
         end
     end
 end
@@ -86,7 +84,7 @@ function shuffle()
     return cards
 end
 
-
+--[[
 function CardClass:draw3()
     local stackX = 740
     local stackY = 50
@@ -104,3 +102,4 @@ function CardClass:draw3()
     stackX = 540
     return true
 end
+]]

@@ -69,7 +69,7 @@ function GrabberClass:release()
     
     -- TODO: eventually check if release position is invalid and if it is
     -- return the heldObject to the grabPosition
-    local isValidReleasePosition = nil
+    local isValidReleasePosition = false
 
     if self.stackCard then
         isValidReleasePosition = true
@@ -78,7 +78,13 @@ function GrabberClass:release()
         isValidReleasePosition = false
     end
 
---[[]]
+    local pos = checkForCardOver()
+    if pos and not self.stackCard then
+        isValidReleasePosition = true
+        self.heldObject.position.x = pos.x
+        self.heldObject.position.y = pos.y
+    end
+
     --if not isValidReleasePosition then
     if isValidReleasePosition == false then
         self.heldObject.position = self.heldObject.start
@@ -90,4 +96,15 @@ function GrabberClass:release()
     
     self.heldObject = nil
     self.grabPos = nil
+end
+
+function checkForCardOver()    
+    for _, pos in ipairs(validPos) do
+        local mousePos = grabber.currentMousePos
+        if mousePos.x > pos.x and mousePos.x < pos.x + 70 and
+        mousePos.y > pos.y and mousePos.y < pos.y + 90 then
+            return pos
+        end
+    end
+    return nil
 end

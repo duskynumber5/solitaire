@@ -101,9 +101,28 @@ function GrabberClass:release()
         self.heldObject.position = self.heldObject.start
     end
 
-    if self.cardUnder and not foundOnTop and isValidReleasePosition then
-        self.cardUnder.faceUp = 1
-    end
+    if self.cardUnder and isValidReleasePosition then
+        local hasCardOnTop = false
+        for _, other in ipairs(cardTable) do
+            if other ~= self.cardUnder and other.faceUp == 1 and
+               other.position.x == self.cardUnder.position.x and
+               other.position.y > self.cardUnder.position.y and
+               (other.position.y - self.cardUnder.position.y) <= 35 then
+                hasCardOnTop = true
+                break
+            end
+        end
+    
+        if not hasCardOnTop then
+            if self.cardUnder.faceUp == 0 then
+                self.cardUnder.faceUp = 1
+            end
+    
+            if self.cardUnder.faceUp == 1 and not self.cardUnder.grabbable then
+                self.cardUnder.grabbable = true
+            end
+        end
+    end    
 
 
     self.heldObject.state = 0 -- it's no longer grabbed
@@ -142,27 +161,13 @@ function checkForCardOver()
 end
 
 function checkForCardOn()
-    for i = #cardTable, 1, -1 do
-        local c = cardTable[i]
+    grabber.cardUnder = nil
+    for _, c in ipairs(cardTable) do
         if c ~= grabber.heldObject and
-           c.position.x == grabber.heldObject.position.x and
-           c.position.y == grabber.heldObject.position.y - 30 then
-    
-            local foundOnTop = false
-    
-            for j = 1, #cardTable do
-                local other = cardTable[j]
-                if other ~= c and other.faceUp == 1 and
-                   other.position.x == c.position.x and
-                   other.position.y > c.position.y and
-                   (other.position.y - c.position.y) == 5 then
-                    foundOnTop = true
-                end
-            end
-    
-            if not foundOnTop then
-                grabber.cardUnder = c
-            end 
+        math.abs(c.position.x - grabber.heldObject.position.x) < 5 and
+        math.abs(c.position.y - grabber.heldObject.position.y + 30) <= 5 then
+            grabber.cardUnder = c
+            break
         end
     end
 end

@@ -18,6 +18,7 @@ function GrabberClass:new()
     grabber.heldObject = nil
 
     grabber.stackCard = nil
+    grabber.cardUnder = nil
 
     return grabber
 end
@@ -58,6 +59,8 @@ function GrabberClass:grab(card)
             break
         end
     end
+    
+    checkForCardOn()
 end
 
 function GrabberClass:release()
@@ -72,8 +75,16 @@ function GrabberClass:release()
     local isValidReleasePosition = false
 
     if self.stackCard then
-        isValidReleasePosition = true
-        self.stackCard.grabbable = false
+        if self.stackCard.position.y == 50 then
+            isValidReleasePosition = true
+            self.heldObject.position.x = self.stackCard.position.x
+            self.heldObject.position.y = self.stackCard.position.y
+        else 
+            isValidReleasePosition = true
+            self.heldObject.position.x = self.stackCard.position.x
+            self.heldObject.position.y = self.stackCard.position.y + 25
+            self.stackCard.grabbable = false
+        end
     else 
         isValidReleasePosition = false
     end
@@ -90,9 +101,15 @@ function GrabberClass:release()
         self.heldObject.position = self.heldObject.start
     end
 
+    if self.cardUnder and not foundOnTop and isValidReleasePosition then
+        self.cardUnder.faceUp = 1
+    end
+
+
     self.heldObject.state = 0 -- it's no longer grabbed
 
     self.stackCard = nil
+    self.cardUnder = nil
     
     self.heldObject = nil
     self.grabPos = nil
@@ -103,8 +120,49 @@ function checkForCardOver()
         local mousePos = grabber.currentMousePos
         if mousePos.x > pos.x and mousePos.x < pos.x + 70 and
         mousePos.y > pos.y and mousePos.y < pos.y + 90 then
-            return pos
+            
+            local occupied = false
+
+            for _, card in ipairs(cardTable) do
+                if card ~= grabber.heldObject and
+                   card.position.x == pos.x and
+                   card.position.y == pos.y then
+                    occupied = true
+                    break
+                end
+            end
+
+            if not occupied then
+                return pos
+            end
+
         end
     end
     return nil
+end
+
+function checkForCardOn()
+    for i = #cardTable, 1, -1 do
+        local c = cardTable[i]
+        if c ~= grabber.heldObject and
+           c.position.x == grabber.heldObject.position.x and
+           c.position.y == grabber.heldObject.position.y - 30 then
+    
+            local foundOnTop = false
+    
+            for j = 1, #cardTable do
+                local other = cardTable[j]
+                if other ~= c and other.faceUp == 1 and
+                   other.position.x == c.position.x and
+                   other.position.y > c.position.y and
+                   (other.position.y - c.position.y) == 5 then
+                    foundOnTop = true
+                end
+            end
+    
+            if not foundOnTop then
+                grabber.cardUnder = c
+            end 
+        end
+    end
 end

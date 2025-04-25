@@ -68,9 +68,22 @@ function CardClass:checkForMouseOver()
 
     if self.state == CARD_STATE.MOUSE_OVER then
         if grabber.heldObject and self.faceUp == 1 then
-            grabber.stackCard = self
-            grabber.heldObject.position.x = self.position.x
-            grabber.heldObject.position.y = self.position.y + 30
+    
+            local hasCardOnTop = false
+            for _, other in ipairs(cardTable) do
+                if other ~= self and
+                   other.position.x == self.position.x and
+                   other.position.y > self.position.y and
+                   (other.position.y - self.position.y) <= 35 and
+                   other.faceUp == 1 then
+                    hasCardOnTop = true
+                    break
+                end
+            end
+    
+            if not hasCardOnTop then
+                grabber.stackCard = self
+            end
         end
     end
 end

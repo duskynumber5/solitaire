@@ -88,6 +88,28 @@ function CardClass:checkForMouseOver()
     end
 end
 
+function CardClass:draw3()
+    drawCards = {}
+    local drawX = 740
+    local drawY = 50
+    if stackTraverse > #cardStack then
+        stackTraverse = 1
+    end
+
+    for i = 1, 3 do
+        if stackTraverse > #cardStack then break end
+        local index = cardStack[stackTraverse]
+        local newCard = CardClass:new(drawX, drawY, 1, index)
+        if i < 3 then
+            newCard.grabbable = false
+        end
+        table.insert(drawCards, newCard)
+
+        drawX = drawX - 30
+        stackTraverse = stackTraverse + 1
+    end
+end
+
 -- simple array shuffle :) https://gist.github.com/Uradamus/10323382 
 function shuffle()
     for i = #cards, 2, -1 do
@@ -96,23 +118,3 @@ function shuffle()
     end
     return cards
 end
-
---[[
-function CardClass:draw3()
-    local stackX = 740
-    local stackY = 50
-    if stackTraverse <= #cardStack then
-        for i = 1, 3, 1 do
-            table.insert(extraCards, CardClass:new(stackX, stackY, 1, cardStack[stackTraverse]))
-            stackX = stackX - (100)
-            counter = counter + 1
-            stackTraverse = stackTraverse + 1
-            if i < 3 then
-                self.grabbable = false
-            end
-        end
-    end
-    stackX = 540
-    return true
-end
-]]

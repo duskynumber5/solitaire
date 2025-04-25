@@ -75,10 +75,12 @@ function GrabberClass:release()
     local isValidReleasePosition = false
 
     if self.stackCard then
-        if self.stackCard.position.y == 50 then
+        if self.stackCard.position.x < 500 and self.stackCard.position.y == 50 then
             isValidReleasePosition = true
             self.heldObject.position.x = self.stackCard.position.x
             self.heldObject.position.y = self.stackCard.position.y
+        elseif self.stackCard.position.x > 500 and self.stackCard.position.y == 50 then
+            isValidReleasePosition = false
         else 
             isValidReleasePosition = true
             self.heldObject.position.x = self.stackCard.position.x

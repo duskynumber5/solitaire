@@ -27,9 +27,11 @@ function love.load()
 
     grabber = GrabberClass:new()
     cardTable = {}
+    
     cardStack = {}
-
-    extraCards = {}
+    drawCards = {}
+    stackTraverse = 1
+    mouseWasDown = false
 
     validPos = {
         {x = 740, y = 250, w = cards[3]:getWidth() + 5, h = cards[3]:getHeight() + 32},
@@ -68,7 +70,7 @@ function love.load()
     end
 
     --draw
-    table.insert(cardTable, CardClass:new(840, 50, 0, 0, "drawCard"))
+    table.insert(cardTable, CardClass:new(840, 50, 0, 0))
     for i = counter, #cards do
         table.insert(cardStack, i)
     end
@@ -82,17 +84,31 @@ function love.update()
 
     checkForMouseMoving()
 
-    for _, card in ipairs(cardTable) do
+    for i = #cardTable, 1, -1 do
+        local card = cardTable[i]
         card:update() 
-        if card.state == CARD_STATE.MOUSE_OVER and love.mouse.isDown(1) and grabber.heldObject == nil and card.faceUp == 1 and card.grabbable == true then
+        if card.state == CARD_STATE.MOUSE_OVER and love.mouse.isDown(1) and grabber.heldObject == nil and card.faceUp == 1 and card.grabbable then
             grabber:grab(card)
         end
-        if card.tag == "drawCard" and card.state == CARD_STATE.MOUSE_OVER then
-            if love.mouse.isDown(1) then
+        if card.position.x == 840 and card.position.y == 50 and card.state == CARD_STATE.MOUSE_OVER then
+            if love.mouse.isDown(1) and not mouseWasDown then
                 card:draw3()
             end
         end
     end
+
+    for _, card in ipairs(drawCards) do
+        card:update()
+        if card.state == CARD_STATE.MOUSE_OVER and love.mouse.isDown(1) and grabber.heldObject == nil and card.faceUp == 1 and card.grabbable then
+            grabber:grab(card)
+        end
+        if card.position.y > 50 then
+            table.insert(cardTable, card)
+            table.remove(drawCards)
+        end
+    end
+
+    mouseWasDown = love.mouse.isDown(1)
 end
 
 function love.draw()
@@ -111,14 +127,17 @@ function love.draw()
         x = x + (110)
     end
 
---[[
-    for _, card in ipairs(extraCards) do
+    -- draw  stack
+    love.graphics.rectangle("line", 840 + 14, 50, cards[3]:getWidth() + 5, cards[3]:getHeight() + 32, 6 ,6)
+
+    for _, card in ipairs(drawCards) do
         card:draw() 
     end
-]]
+    
     for _, card in ipairs(cardTable) do
         card:draw()  -- card.draw(card)
     end
+
 
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.print("Mouse: " .. tostring(grabber.currentMousePos.x) .. ", " .. tostring(grabber.currentMousePos.y))
@@ -130,6 +149,10 @@ function checkForMouseMoving()
     end
 
     for _, card in ipairs(cardTable) do
+        card:checkForMouseOver(grabber)
+    end
+    
+    for _, card in ipairs(drawCards) do
         card:checkForMouseOver(grabber)
     end
 end

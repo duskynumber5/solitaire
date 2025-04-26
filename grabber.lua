@@ -14,7 +14,6 @@ function GrabberClass:new()
 
     grabber.grabPos = nil
   
-    -- NEW: we'll want to keep track of the object (ie. card) we're holding
     grabber.heldObject = nil
 
     grabber.stackCard = nil
@@ -29,12 +28,12 @@ function GrabberClass:update()
         love.mouse.getY()
     )
     
-    -- Click
+    -- click
     if love.mouse.isDown(1) and self.heldObject then
         self.heldObject.position.x = self.currentMousePos.x - 25
         self.heldObject.position.y = self.currentMousePos.y - 25
     end
-    -- Release
+    -- release
     if not love.mouse.isDown(1) and self.grabPos ~= nil then
         self:release()
     end
@@ -65,13 +64,10 @@ end
 
 function GrabberClass:release()
 
-        -- NEW: some more logic stubs here
-    if self.heldObject == nil then -- we have nothing to release
+    if self.heldObject == nil then 
         return
     end
     
-    -- TODO: eventually check if release position is invalid and if it is
-    -- return the heldObject to the grabPosition
     local isValidReleasePosition = false
 
     if self.stackCard then
@@ -98,7 +94,6 @@ function GrabberClass:release()
         self.heldObject.position.y = pos.y
     end
 
-    --if not isValidReleasePosition then
     if isValidReleasePosition == false then
         self.heldObject.position = self.heldObject.start
     end
@@ -127,7 +122,7 @@ function GrabberClass:release()
 
     end    
 
-    self.heldObject.state = 0 -- it's no longer grabbed
+    self.heldObject.state = 0
 
     self.stackCard = nil
     self.cardUnder = nil

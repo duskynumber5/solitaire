@@ -1,6 +1,3 @@
--- Maddison Lobo
--- CMPM 121 - Pickup
--- 4-11-25
 io.stdout:setvbuf("no")
 
 require "card"
@@ -61,12 +58,12 @@ function love.load()
                     faceUp = 1
                 end
                 table.insert(cardTable, CardClass:new(x, y, faceUp, counter))
-                y = y + (30) -- print next row of cards
+                y = y + (30) 
                 counter = counter + 1
             end
         faceUp = 0
-        y = 250 -- reset to stack y
-        x = x - (110) -- print cards from right to left
+        y = 250 
+        x = x - (110) 
     end
 
     --draw
@@ -129,7 +126,7 @@ function love.draw()
     y = 250
     for i = 7, 1, -1 do
         love.graphics.rectangle("line", x + 14, y, cards[3]:getWidth() + 5, cards[3]:getHeight() + 32, 6 ,6)
-        x = x - (110) -- print cards from right to left
+        x = x - (110) 
     end
 
     -- suit stacks
@@ -147,7 +144,7 @@ function love.draw()
     end
     
     for _, card in ipairs(cardTable) do
-        card:draw()  -- card.draw(card)
+        card:draw()  
     end
 
 

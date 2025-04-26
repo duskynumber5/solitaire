@@ -32,15 +32,13 @@ function CardClass:draw()
     width = cards[3]:getWidth()
     height = cards[3]:getHeight()
 
-    -- NEW: drop shadow for non-idle cards
     if self.state ~= CARD_STATE.IDLE and self.faceUp == 1 then
-        love.graphics.setColor(0, 0, 0, 0.8) -- color values [0, 1]
+        love.graphics.setColor(0, 0, 0, 0.8) 
         local offset = 18 * (self.state == CARD_STATE.GRABBED and 2 or 1)
         love.graphics.rectangle("fill", self.position.x + offset, (self.position.y - 12) + offset, width + 10, height + 30, 6, 6)
     end
 
     love.graphics.setColor(1, 1, 1 ,1)
-    --love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y, 6 ,6)
 
     if self.faceUp == 0 then
         love.graphics.draw(cardBack, self.position.x, self.position.y, 0, 1.5, 1.5)

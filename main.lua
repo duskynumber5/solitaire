@@ -70,7 +70,7 @@ function love.load()
     end
 
     --draw
-    table.insert(cardTable, CardClass:new(840, 50, 0, 0))
+    stackCardTop = table.insert(cardTable, CardClass:new(840, 50, 0, 0))
     for i = counter, #cards do
         table.insert(cardStack, i)
     end
@@ -83,6 +83,25 @@ function love.update()
     grabber.stackCard = nil
 
     checkForMouseMoving()
+
+    for i = #drawCards, 1, -1 do
+        local card = drawCards[i]
+        card:update()
+        
+        if card == drawCards[#drawCards] then
+            card.grabbable = true
+        end
+
+        if card.state == CARD_STATE.MOUSE_OVER and love.mouse.isDown(1) and grabber.heldObject == nil and card.faceUp == 1 and card.grabbable then
+            grabber:grab(card)
+        end
+
+        if card.position.x ~= 740 and card.position.x ~= 710 and card.position.x ~= 680  and card.state == CARD_STATE.IDLE then
+            table.insert(cardTable, card)
+            table.remove(drawCards, i)
+            table.remove(cardStack, i)
+        end
+    end
 
     for i = #cardTable, 1, -1 do
         local card = cardTable[i]
@@ -97,15 +116,8 @@ function love.update()
         end
     end
 
-    for _, card in ipairs(drawCards) do
-        card:update()
-        if card.state == CARD_STATE.MOUSE_OVER and love.mouse.isDown(1) and grabber.heldObject == nil and card.faceUp == 1 and card.grabbable then
-            grabber:grab(card)
-        end
-        if card.position.y > 50 then
-            table.insert(cardTable, card)
-            table.remove(drawCards)
-        end
+    if #cardStack == 0 then
+        cardStackTop = nil
     end
 
     mouseWasDown = love.mouse.isDown(1)

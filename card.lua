@@ -20,6 +20,7 @@ function CardClass:new(xPos, yPos, faceUp, counter)
     card.grabbable = true
     card.counter = counter
 
+
     return card
 end
 
@@ -92,18 +93,20 @@ function CardClass:draw3()
     drawCards = {}
     local drawX = 740
     local drawY = 50
-    if stackTraverse > #cardStack then
-        stackTraverse = 1
-    end
 
-    for i = 1, 3 do
-        if stackTraverse > #cardStack then break end
+    for i = #cardStack, #cardStack - 2, -1 do
+        if #cardStack == 0 then break end
+
+        if stackTraverse > #cardStack then
+            stackTraverse = 1
+        end
+
         local index = cardStack[stackTraverse]
         local newCard = CardClass:new(drawX, drawY, 1, index)
-        if i < 3 then
-            newCard.grabbable = false
-        end
+        newCard.grabbable = false
         table.insert(drawCards, newCard)
+
+        newCard.grabbable = (i == 3 or stackTraverse == #cardStack)
 
         drawX = drawX - 30
         stackTraverse = stackTraverse + 1

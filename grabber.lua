@@ -124,8 +124,8 @@ function GrabberClass:release()
                 self.cardUnder.grabbable = true
             end
         end
-    end    
 
+    end    
 
     self.heldObject.state = 0 -- it's no longer grabbed
 
